@@ -30,4 +30,36 @@ class Api::V1::PortfoliosController < ApplicationController
     rescue ActiveRecord::RecordNotFound
         render json: { error: "Customer not found" }, status: :not_found
     end
+
+    def deposit
+      customer = Customer.find(params[:customer_id])
+      portfolio = customer.portfolios.find(params[:id])
+    
+      unless %w[CTO PEA].include?(portfolio.portfolio_type)
+        return render json: { error: "Deposits are only allowed for CTO or PEA portfolios" }, status: :forbidden
+      end
+    
+      investment = portfolio.investments.find(params[:investment_id])
+      amount = params[:amount].to_f
+      portfolio_investment = PortfolioInvestment.find_by!(portfolio_id: portfolio.id, investment_id: investment.id)
+      portfolio_investment.amount_invested += amount
+      portfolio_investment.save!
+    
+      portfolio.total_amount += amount
+      portfolio.save!
+    
+      render json: {
+        message: "Deposit successful",
+        investment: {
+          id: investment.id,
+          amount_invested: portfolio_investment.amount_invested
+        },
+        total_portfolio_amount: portfolio.total_amount
+      }
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Portfolio or Investment not found" }, status: :not_found
+    rescue => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
+    
 end
