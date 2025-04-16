@@ -13,7 +13,7 @@ crypto = Investment.create!(isin: "FR0000000004", investment_types: "Crypto", la
 # Prudent: low-risk investments
 prudent_portfolio = Portfolio.create!(
   label: "Prudent Portfolio",
-  portfolio_type: "Prudent",
+  portfolio_type: "Life Insurance",
   total_amount: 50000,
   customer: customer
 )
@@ -21,7 +21,7 @@ prudent_portfolio = Portfolio.create!(
 # Balanced: medium risk
 balanced_portfolio = Portfolio.create!(
   label: "Balanced Portfolio",
-  portfolio_type: "Balanced",
+  portfolio_type: "PEA",
   total_amount: 70000,
   customer: customer
 )
@@ -29,7 +29,7 @@ balanced_portfolio = Portfolio.create!(
 # Aggressive: high-risk investments
 aggressive_portfolio = Portfolio.create!(
   label: "Aggressive Portfolio",
-  portfolio_type: "Aggressive",
+  portfolio_type: "CTO",
   total_amount: 90000,
   customer: customer
 )
