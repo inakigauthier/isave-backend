@@ -61,5 +61,40 @@ class Api::V1::PortfoliosController < ApplicationController
     rescue => e
       render json: { error: e.message }, status: :unprocessable_entity
     end
+
+    def withdraw
+      customer = Customer.find(params[:customer_id])
+      portfolio = customer.portfolios.find(params[:id])
+    
+      unless %w[CTO PEA].include?(portfolio.portfolio_type.upcase)
+        return render json: { error: "Withdrawals are only allowed for CTO and PEA portfolios." }, status: :forbidden
+      end
+    
+      investment = portfolio.investments.find(params[:investment_id])
+      portfolio_investment = PortfolioInvestment.find_by!(portfolio: portfolio, investment: investment)
+    
+      amount = params[:amount].to_f
+    
+      if amount > portfolio_investment.amount_invested
+        return render json: { error: "Not enough funds in this investment." }, status: :unprocessable_entity
+      end
+    
+      portfolio_investment.update!(amount_invested: portfolio_investment.amount_invested - amount)
+      portfolio.update!(total_amount: portfolio.total_amount - amount)
+    
+      render json: {
+        message: "Withdrawal successful.",
+        investment: {
+          id: investment.id,
+          label: investment.label,
+          amount_invested: portfolio_investment.amount_invested
+        },
+        total_portfolio_amount: portfolio.total_amount
+      }, status: :ok
+    
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: "Customer or investment not found" }, status: :not_found
+    end
+    
     
 end

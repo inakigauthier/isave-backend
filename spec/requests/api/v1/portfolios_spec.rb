@@ -72,5 +72,48 @@ RSpec.describe 'Api::V1::Portfolios', type: :request do
       end
     end
   end
+
+
+  describe 'POST /api/v1/customers/:customer_id/portfolios/:id/withdraw' do
+    context "with valid withdrawal" do
+      it "reduces the amount invested and portfolio total amount" do
+        post "/api/v1/customers/#{customer.id}/portfolios/#{portfolio.id}/withdraw", params: {
+          investment_id: investment.id,
+          amount: 5000
+        }
   
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+  
+        expect(json["investment"]["amount_invested"].to_i).to eq(5000)
+        expect(json["total_portfolio_amount"].to_i).to eq(95000)
+      end
+    end
+  
+    context "with invalid withdrawal amount" do
+      it "returns an error if amount is too high" do
+        post "/api/v1/customers/#{customer.id}/portfolios/#{portfolio.id}/withdraw", params: {
+          investment_id: investment.id,
+          amount: 20_000
+        }
+  
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Not enough funds in this investment.")
+      end
+    end
+  end
 end
+
+
+
+#curl -X POST http://localhost:3000/api/v1/customers/1/portfolios/2/deposit \
+#-H "Content-Type: application/json" \
+#-d '{"investment_id": 3, "amount": 5000}'
+
+# curl -X POST "http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/deposit" \
+# -H "Content-Type: application/json" \
+# -d '{"investment_id": "{investment_id}", "amount": 5000}'
+
+
+
