@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get 'customers/:id/portfolios', to: 'portfolios#index'
+      get 'customers/:id/insights', to: 'insights#show'
   
       post 'customers/:customer_id/portfolios/:id/deposit', to: 'portfolios#deposit'
       post 'customers/:customer_id/portfolios/:id/withdraw', to: 'portfolios#withdraw'
