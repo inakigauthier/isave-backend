@@ -1,3 +1,9 @@
+
+
+Full API Documentation
+See docs/api.md for complete examples and error cases.
+
+
 # WeSave Backend Challenge - iSave
 
 ## Requirements
@@ -73,3 +79,4 @@ Please also note that:
 - All asset prices are defined in the same currency.
 
 **Good luck!**
+
