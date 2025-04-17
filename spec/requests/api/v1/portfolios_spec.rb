@@ -197,13 +197,3 @@ end
 
 
 
-#curl -X POST http://localhost:3000/api/v1/customers/1/portfolios/2/deposit \
-#-H "Content-Type: application/json" \
-#-d '{"investment_id": 3, "amount": 5000}'
-
-# curl -X POST "http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/deposit" \
-# -H "Content-Type: application/json" \
-# -d '{"investment_id": "{investment_id}", "amount": 5000}'
-
-
-
