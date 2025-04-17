@@ -95,6 +95,38 @@ class Api::V1::PortfoliosController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       render json: { error: "Customer or investment not found" }, status: :not_found
     end
-    
+
+
+    def arbitrate
+  customer = Customer.find(params[:customer_id])
+  portfolio = customer.portfolios.find(params[:id])
+
+  unless %w[CTO PEA].include?(portfolio.portfolio_type.upcase)
+    return render json: { error: "Arbitration only allowed on CTO or PEA" }, status: :forbidden
+  end
+
+  from_id = params[:from_investment_id]
+  to_id = params[:to_investment_id]
+  amount = params[:amount].to_f
+
+  return render json: { error: "Amount must be positive" }, status: :unprocessable_entity if amount <= 0
+
+  from_portfolio = portfolio.portfolio_investments.find_by(investment_id: from_id)
+  to_portfolio = portfolio.portfolio_investments.find_by(investment_id: to_id)
+
+  return render json: { error: "From investment not found in portfolio" }, status: :not_found unless from_portfolio
+  return render json: { error: "Destination investment not found in portfolio" }, status: :not_found unless to_portfolio
+  return render json: { error: "Not enough funds" }, status: :unprocessable_entity if from_portfolio.amount_invested < amount
+
+  ActiveRecord::Base.transaction do
+    from_portfolio.update!(amount_invested: from_portfolio.amount_invested - amount)
+    to_portfolio.update!(amount_invested: to_portfolio.amount_invested + amount)
+  end
+
+  render json: { message: "Arbitrage completed successfully." }, status: :ok
+rescue => e
+  render json: { error: e.message }, status: :unprocessable_entity
+end
+
     
 end
