@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Portfolio < ApplicationRecord
   belongs_to :customer
   has_many :portfolio_investments, dependent: :destroy
