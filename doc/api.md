@@ -151,20 +151,20 @@ Status	Message
 
 Tip: Test with curl
 
-curl -X POST http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/deposit \
--H "Content-Type: application/json" \
--d '{"investment_id": 33, "amount": 5000}'
+# curl -X POST http://localhost:3000/api/v1/customers/1/portfolios/2/deposit \
+# -H "Content-Type: application/json" \
+# -d '{"investment_id": 3, "amount": 5000}'
 
-curl -X POST "http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/withdraw" \
--H "Content-Type: application/json" \
--d '{"investment_id": "{investment_id}", "amount": 5000}'
+# curl -X POST "http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/deposit" \
+# -H "Content-Type: application/json" \
+# -d '{"investment_id": "{investment_id}", "amount": 5000}'
 
-curl -X POST http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/arbitrate \
--H "Content-Type: application/json" \
--d '{
-  "from_investment_id": 29,
-  "to_investment_id": 30,
-  "amount": 10000
- }'
+# curl -X POST http://localhost:3000/api/v1/customers/10/portfolios/17/arbitrate \
+# -H "Content-Type: application/json" \
+# -d '{
+#   "from_investment_id": 29,
+#   "to_investment_id": 30,
+#   "amount": 10000
+# }'
 
 

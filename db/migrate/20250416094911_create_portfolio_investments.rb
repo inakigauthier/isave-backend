@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreatePortfolioInvestments < ActiveRecord::Migration[7.1]
   def change
     create_table :portfolio_investments do |t|
