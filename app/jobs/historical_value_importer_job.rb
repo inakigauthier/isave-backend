@@ -9,7 +9,6 @@ class HistoricalValueImporterJob < ApplicationJob
     json_data = JSON.parse(file)
     
     json_data.each do |portfolio_label, values|
-      byebug
       portfolio = Portfolio.find_by(label: portfolio_label)
       next unless portfolio
     
