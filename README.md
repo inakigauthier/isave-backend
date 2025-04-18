@@ -266,7 +266,7 @@ Status | Message
 
 ---
 
-Tip: Test with curl
+# Tip: Test with curl
 
 curl -X POST http://localhost:3000/api/v1/customers/{customer_id}/portfolios/{portfolio_id}/deposit \
 -H "Content-Type: application/json" \
