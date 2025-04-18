@@ -21,7 +21,7 @@ API Documentation
 
 The current implementation covers:
 
-- ✅ Level 1 – Display all customer portfolios with investment breakdowns.
+- ✅ Level 1 – Display all customer portfolios with investment.
 - ✅ Level 2 – Allow deposit, withdrawal, and arbitration (only for CTO and PEA).
 - ✅ Level 3 – Portfolio insights (risk and allocation indicators).
 - ✅ Level 4 – Historical values of portfolios.
@@ -59,15 +59,6 @@ Base URL
 http://localhost:3000/api/v1
 
 ---
-## Access Rules
-
-- A **Customer can only access their own Portfolios**
-- Only **portfolios of type "CTO" or "PEA"** support:
-  - Deposit
-  - Withdraw
-  - Arbitration (moving funds between investments)
-- A **Customer can only retrieve insights and historical data for their own Portfolios**
-
 
 ## Endpoints Summary
 
@@ -144,11 +135,11 @@ http://localhost:3000/api/v1
 
 #### Possible Errors
 
-Status | Message
-403 | Deposits are only allowed for CTO or PEA portfolios
-404 | Portfolio or Investment not found
-422 | Amount must be positive
-422 | [Autre erreur inattendue, ex: validation fail]
+- **403 Forbidden**: Deposits are only allowed for CTO or PEA portfolios  
+- **404 Not Found**: Portfolio or Investment not found  
+- **422 Unprocessable Entity**: Amount must be positive  
+- **422 Unprocessable Entity**: Other unexpected error (e.g., validation failed)
+
 
 ---
 
@@ -175,15 +166,13 @@ Status | Message
   "total_portfolio_amount": 98000.0
 }
 ```
+### Possible Errors
 
-#### Possible Errors
+- **403 Forbidden**: Withdrawals are only allowed for CTO and PEA portfolios  
+- **404 Not Found**: Customer or investment not found  
+- **422 Unprocessable Entity**: Not enough funds in this investment  
+- **422 Unprocessable Entity**: Amount must be positive
 
-Status | Message
-403 | Withdrawals are only allowed for CTO and PEA portfolios
-404 | Customer or investment not found
-422 | Not enough funds in this investment
-422 | Amount must be positive
----
 
 ### 4. Arbitrate (Move Funds)
 
@@ -205,15 +194,14 @@ Status | Message
 }
 ```
 
-#### Possible Errors
+### Possible Errors
 
-Status | Message
-403 | Arbitration only allowed on CTO or PEA
-404 | From investment not found in portfolio
-404 | Destination investment not found in portfolio
-422 | Amount must be positive
-422 | Not enough funds
-422 | Unexpected error (from DB validations, etc.)
+- **403 Forbidden**: Arbitration only allowed on CTO or PEA  
+- **404 Not Found**: From investment not found in portfolio  
+- **404 Not Found**: Destination investment not found in portfolio  
+- **422 Unprocessable Entity**: Amount must be positive  
+- **422 Unprocessable Entity**: Not enough funds  
+- **422 Unprocessable Entity**: Unexpected error (from DB validations, etc.)
 
 ---
 
@@ -259,10 +247,10 @@ Status | Message
 ]
 ```
 
-#### Possible Errors
+### Possible Errors
 
-Status | Message
-404 | Customer or Portfolio not found
+- **404 Not Found**: Customer or Portfolio not found
+
 
 ---
 
