@@ -34,8 +34,7 @@ class Api::V1::PortfoliosController < ApplicationController
   
 
     def deposit
-      customer = Customer.find(params[:customer_id])
-      portfolio = customer.portfolios.find(params[:id])
+      portfolio = find_portfolio(params)
     
       unless %w[CTO PEA].include?(portfolio.portfolio_type)
         return render json: { error: "Deposits are only allowed for CTO or PEA portfolios" }, status: :forbidden
@@ -65,8 +64,7 @@ class Api::V1::PortfoliosController < ApplicationController
     end
 
     def withdraw
-      customer = Customer.find(params[:customer_id])
-      portfolio = customer.portfolios.find(params[:id])
+      portfolio = find_portfolio(params)
     
       unless %w[CTO PEA].include?(portfolio.portfolio_type.upcase)
         return render json: { error: "Withdrawals are only allowed for CTO and PEA portfolios." }, status: :forbidden
@@ -100,8 +98,7 @@ class Api::V1::PortfoliosController < ApplicationController
 
 
     def arbitrate
-  customer = Customer.find(params[:customer_id])
-  portfolio = customer.portfolios.find(params[:id])
+      portfolio = find_portfolio(params)
 
   unless %w[CTO PEA].include?(portfolio.portfolio_type.upcase)
     return render json: { error: "Arbitration only allowed on CTO or PEA" }, status: :forbidden
@@ -130,5 +127,11 @@ rescue => e
   render json: { error: e.message }, status: :unprocessable_entity
 end
 
+private
+
+def find_portfolio(params)
+  customer = Customer.find(params[:customer_id])
+  customer.portfolios.find(params[:id])
+end
     
 end
