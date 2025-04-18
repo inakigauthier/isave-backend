@@ -15,19 +15,19 @@ RSpec.describe 'Api::V1::Portfolios', type: :request do
       it 'returns a list of portfolios' do
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
-        expect(json).to be_an(Array)
-        expect(json.first['label']).to eq(portfolio.label)
-        expect(json.first['total_amount']).to eq(portfolio.total_amount.to_f)
+        expect(json['contracts']).to be_an(Array)
+        expect(json['contracts'].first['label']).to eq(portfolio.label)
+        expect(json['contracts'].first['amount']).to eq(portfolio.total_amount.to_f)
       end
 
       it 'includes investments and their details' do
         json = JSON.parse(response.body)
-        portfolio_data = json.first
-        investment_data = portfolio_data['investments'].first
+        portfolio_data = json['contracts'].first
+        investment_data = portfolio_data['lines'].first
 
         expect(investment_data['label']).to eq(investment.label)
-        expect(investment_data['amount_invested']).to eq(portfolio_investment.amount_invested.to_f)
-        expect(investment_data['share']).to eq((portfolio_investment.amount_invested.to_f / portfolio.total_amount.to_f) * 100)
+        expect(investment_data['amount']).to eq(portfolio_investment.amount_invested.to_f)
+        expect(investment_data['share']).to eq((portfolio_investment.amount_invested.to_f / portfolio.total_amount.to_f))
       end
     end
 

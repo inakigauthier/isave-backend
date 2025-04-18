@@ -1,35 +1,37 @@
 class Api::V1::PortfoliosController < ApplicationController
-    def index
-        customer = Customer.find(params[:id])
-        portfolios = customer.portfolios.includes(:investments, :portfolio_investments)
-
-        render json: portfolios.map { |portfolio|
-          total = portfolio.total_amount.to_f
-          {
-            id: portfolio.id,
-            label: portfolio.label,
-            type: portfolio.portfolio_type,
-            total_amount: total,
-            investments: portfolio.portfolio_investments.map { |pi|
-              investment = pi.investment
-              share = ((pi.amount_invested.to_f / total) * 100)
-
-              {
-                id: investment.id,
-                label: investment.label,
-                isin: investment.isin,
-                type: investment.investment_types,
-                price: investment.price.to_f,
-                sri: investment.sri,
-                amount_invested: pi.amount_invested.to_f,
-                share: share
-              }
+  def index
+    customer = Customer.find(params[:id])
+    portfolios = customer.portfolios.includes(:investments, :portfolio_investments)
+  
+    render json: {
+      contracts: portfolios.map do |portfolio|
+        total = portfolio.total_amount.to_f
+  
+        {
+          label: portfolio.label,
+          type: portfolio.portfolio_type,
+          amount: total,
+          lines: portfolio.portfolio_investments.map do |pi|
+            investment = pi.investment
+            share = (pi.amount_invested.to_f / total).round(2)
+  
+            {
+              type: investment.investment_types.downcase, # important pour matcher le JSON
+              isin: investment.isin,
+              label: investment.label,
+              price: investment.price.to_f,
+              share: share,
+              amount: pi.amount_invested.to_f,
+              srri: investment.sri
             }
-          }
+          end
         }
-    rescue ActiveRecord::RecordNotFound
-        render json: { error: "Customer not found" }, status: :not_found
-    end
+      end
+    }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Customer not found" }, status: :not_found
+  end
+  
 
     def deposit
       customer = Customer.find(params[:customer_id])
